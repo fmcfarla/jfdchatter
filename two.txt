@@ -1,1 +1,2 @@
 This is text file number 2.
+This might be my favorite file.
