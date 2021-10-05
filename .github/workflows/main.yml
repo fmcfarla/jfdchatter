@@ -23,7 +23,7 @@ jobs:
       - name: GCS test
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          credemtials: ${{ secrets.GCP_SA_KEY }}
+          credentials: ${{ secrets.GCP_SA_KEY }}
           path: ./file.txt
           destination: native-apps-artifacts/test
           
