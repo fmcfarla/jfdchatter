@@ -20,11 +20,24 @@ jobs:
           echo 'did it keep?'
           echo "Hello, world">file.txt
           
-      - name: GCS test
-        uses: google-github-actions/upload-cloud-storage@main
-        with:
-          credentials: ${{ secrets.GCP_SA_KEY }}
-          path: ./file.txt
-          destination: native-apps-artifacts/test
+#       - name: GCS test
+#         uses: google-github-actions/upload-cloud-storage@main
+#         with:
+#           credentials: ${{ secrets.GCP_SA_KEY }}
+#           path: ./file.txt
+#           destination: native-apps-artifacts/test
+
+        - name: GCS setup
+          uses: google-github-actions/setup-gcloud@master
+          with:
+            service_account_key: ${{ secrets.GCP_SA_KEY }}
+            export_default_credentials: true
+            
+        - name: GCS upload
+          uses: google-github-actions/upload-cloud-storage@main
+          with:
+            path: ./file.txt
+            destination: native-apps-artifacts/test
+            
           
         
