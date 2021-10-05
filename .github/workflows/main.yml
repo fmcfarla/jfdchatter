@@ -18,3 +18,13 @@ jobs:
         run: |
           echo $version
           echo 'did it keep?'
+          echo "Hello, world">file.txt
+          
+      - name: GCS test
+        uses: google-github-actions/upload-cloud-storage@main
+        with:
+          path: ./file.txt
+          destination: native-apps-artifacts/test
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          
+        
