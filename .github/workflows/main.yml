@@ -2,6 +2,11 @@ name: Var Testing
 
 on:
   workflow_dispatch:
+    inputs:
+      market:
+        description: 'Market to build'
+        required: true
+        default: 'rochester-ny'
 
 jobs:
   build:
@@ -9,23 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run a one-line script
-        run: |
-          version="1.0"
-          echo $version
         
       - name: Run a multi-line script
         run: |
           echo $version
           echo 'did it keep?'
-          echo "Hello, world">file.txt
-          
-#       - name: GCS test
-#         uses: google-github-actions/upload-cloud-storage@main
-#         with:
-#           credentials: ${{ secrets.GCP_SA_KEY }}
-#           path: ./file.txt
-#           destination: native-apps-artifacts/test
+          echo "${{ github.event.inputs.market }}">file.txt
+
+
 
       - name: GCS setup
         uses: google-github-actions/setup-gcloud@master
@@ -37,7 +33,18 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: ./file.txt
-          destination: native-apps-artifacts/test
+          destination: native-apps-artifacts/test/${{ github.event.inputs.market }}/$GITHUB_RUN_NUMBER
+      
+#       - name: On Success
+#         uses: rtCamp/action-slack-notify@v2
+#         env:
+#           SLACK_CHANNEL: ios-ci
+#           SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+#           SLACK_ICON: https://www.gannett.com/wp-content/uploads/2019/11/Gannett_DayOne_Facebook-Shared-Image_1200x630.jpg
+#           SLACK_MESSAGE: https://console.cloud.google.com/storage/browser/native-apps-artifacts/Android/${{ github.event.inputs.market }}/${{ github.run_number }}
+#           SLACK_TITLE: APK Posted
+#           SLACK_USERNAME: native-apps-android
+#           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
             
           
         
