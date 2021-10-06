@@ -38,7 +38,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: .
-          destination: native-apps-artifacts/${{ github.event.inputs.versionFolder }}/${{ github.event.inputs.market }}/${{ github.run_number }}
+          destination: native-apps-artifacts/test/${{ github.event.inputs.versionFolder }}/${{ github.event.inputs.market }}/${{ github.run_number }}
           glob: '**/*.txt'
       
 #       - name: On Success
