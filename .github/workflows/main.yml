@@ -32,7 +32,7 @@ jobs:
       - name: GCS upload
         uses: google-github-actions/upload-cloud-storage@main
         with:
-          path: ./file.txt
+          path: ./*.txt
           destination: native-apps-artifacts/test/${{ github.event.inputs.market }}/${{ github.run_number }}
       
 #       - name: On Success
