@@ -33,7 +33,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: ./file.txt
-          destination: native-apps-artifacts/test/${{ github.event.inputs.market }}/${{ github.run_id }}
+          destination: native-apps-artifacts/test/${{ github.event.inputs.market }}/${{ github.run_number }}
       
 #       - name: On Success
 #         uses: rtCamp/action-slack-notify@v2
