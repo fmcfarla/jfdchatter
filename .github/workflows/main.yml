@@ -25,6 +25,8 @@ jobs:
           echo $version
           echo 'did it keep?'
           echo "${{ github.event.inputs.market }}">file.txt
+          pwd
+          ls
 
 
 
