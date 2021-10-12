@@ -35,6 +35,6 @@ jobs:
           
           JSON_PAYLOAD='{"channel":"ios-ci","text":"Hello, world"}]}'
           
-          curl -s -X POST -H "Authorization: Bearer ${SLACK_TOKEN}" \
+          curl -s -X POST -H "Authorization: Bearer ${{ secrets.SLACK_TOKEN }}" \
           -H "Content-type: application/json" \
-          --data "$JSON_PAYLOAD" ${SLACK_WEBHOOK}
+          --data "$JSON_PAYLOAD" ${{ secrets.SLACK_WEBHOOK }}
