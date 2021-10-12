@@ -33,7 +33,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           
-          JSON_PAYLOAD='{"channel":"'ios-ci'","attachments":["text":"'hello, world'"}]}'
+          JSON_PAYLOAD='{"channel":"ios-ci","attachments":[{"text":"hello, world"}]}'
           
           curl -s -X POST -H "Authorization: Bearer ${{ secrets.SLACK_TOKEN }}" \
           -H "Content-type: application/json" \
