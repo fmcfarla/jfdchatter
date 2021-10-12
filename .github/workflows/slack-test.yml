@@ -40,24 +40,24 @@ jobs:
           --data "$JSON_PAYLOAD" ${{ secrets.SLACK_WEBHOOK }}
           
       - name: On Success
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_CHANNEL: ios-ci
-        SLACK_COLOR: good
-        SLACK_ICON: https://www.gannett.com/wp-content/uploads/2019/11/vendor_icon-150x150.png
-        SLACK_MESSAGE: (market) built successfully${{ github.run_number }}
-        SLACK_TITLE: Successful build example
-        SLACK_USERNAME: native-apps-ios
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: ios-ci
+          SLACK_COLOR: good
+          SLACK_ICON: https://www.gannett.com/wp-content/uploads/2019/11/vendor_icon-150x150.png
+          SLACK_MESSAGE: (market) built successfully${{ github.run_number }}
+          SLACK_TITLE: Successful build example
+          SLACK_USERNAME: native-apps-ios
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 
-    - name: On failure example
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_CHANNEL: ios-ci
-        SLACK_COLOR: bad
-        SLACK_ICON: https://www.gannett.com/wp-content/plugins/gannett-shortcodes//assets/icons_flat_announce.png
-        SLACK_MESSAGE: (market) failed to build. 
-        SLACK_TITLE: Build failed example, sorry ${{ github.actor }}          
-        SLACK_USERNAME: native-apps-ios
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: On failure example
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: ios-ci
+          SLACK_COLOR: bad
+          SLACK_ICON: https://www.gannett.com/wp-content/plugins/gannett-shortcodes//assets/icons_flat_announce.png
+          SLACK_MESSAGE: (market) failed to build. 
+          SLACK_TITLE: Build failed example, sorry ${{ github.actor }}          
+          SLACK_USERNAME: native-apps-ios
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
