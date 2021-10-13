@@ -9,6 +9,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Set up the version number
+        run: |
+          echo "version_number=2.0.0" >> $GITHUB_ENV
 
       - name: Run a one-line script
         run: echo Hello, world!
@@ -22,11 +26,8 @@ jobs:
         uses: actions/github-script@v3
         with:
 #           github-token: ${{ github.token }}
-          run: |
-            name='fred'
-            echo $name
           script: |
-            const thetag = $name${{ github.run_number }}'
+            const thetag = '${{ env.version_number }}${{ github.run_number }}'
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
