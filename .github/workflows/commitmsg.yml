@@ -23,6 +23,8 @@ jobs:
         with:
 #           github-token: ${{ github.token }}
           script: |
+            String content = Files.readString("./one.txt")
+            System.out.println(content)
             const thetag = '1.0.0.${{ github.run_number }}'
             github.git.createRef({
               owner: context.repo.owner,
