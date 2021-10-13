@@ -1,4 +1,4 @@
-name: CI
+name: Tagging test
 
 on:
   workflow_dispatch:
@@ -23,9 +23,10 @@ jobs:
         with:
 #           github-token: ${{ github.token }}
           script: |
+            tagname='1.0.0'
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/tagname",
+              ref: "refs/tags/$tagname",
               sha: context.sha
             })
