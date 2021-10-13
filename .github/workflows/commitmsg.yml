@@ -22,8 +22,11 @@ jobs:
         uses: actions/github-script@v3
         with:
 #           github-token: ${{ github.token }}
+          run: |
+            name='fred'
+            echo $name
           script: |
-            const thetag = '1.0.0.${{ github.run_number }}'
+            const thetag = $name${{ github.run_number }}'
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
