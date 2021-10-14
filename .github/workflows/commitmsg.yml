@@ -27,11 +27,12 @@ jobs:
 
       - name: Create tag
         uses: actions/github-script@v3
-        script: |
-          const thetag = '${{ env.version_number }}'
-          github.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: "refs/tags/" + (thetag),
-            sha: context.sha
-          })
+        with:
+          script: |
+            const thetag = '${{ env.version_number }}'
+              github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/" + (thetag),
+              sha: context.sha
+            })
