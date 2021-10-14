@@ -30,7 +30,7 @@ jobs:
         with:
 #           github-token: ${{ github.token }}
           script: |
-            const thetag = '${{ env.version_number }}
+            const thetag = '${{ env.version_number }}'
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
