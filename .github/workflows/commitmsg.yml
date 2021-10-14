@@ -2,6 +2,11 @@ name: Tagging test
 
 on:
   workflow_dispatch:
+    inputs:
+      scheme:
+        description: enter a scheme
+        required: true
+        default: 'USAToday'
 
 jobs:
   build:
@@ -26,6 +31,7 @@ jobs:
           echo test, and deploy your project.
 
       - name: Create tag
+        if: github.event.inputs.scheme == 'USAToday'
         uses: actions/github-script@v3
         with:
           script: |
