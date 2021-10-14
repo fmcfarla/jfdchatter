@@ -13,8 +13,8 @@ jobs:
       - name: Set up the version number
         run: |
           # echo "version_number=2.0.0" >> $GITHUB_ENV
-          VN=$(grep GNT_SHORT VersionNumber.xcconfig | sed s/GNT_SHORT_VERSION_BASE=//g)
-          # VN=$NVN${{ github.run_number }}
+          VNTEMP=$(grep GNT_SHORT VersionNumber.xcconfig | sed s/GNT_SHORT_VERSION_BASE=//g)
+          VN=$VNTEMP.${{ github.run_number }}
           echo "version_number=$VN" >> $GITHUB_ENV
 
       - name: Run a one-line script
