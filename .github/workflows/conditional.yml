@@ -22,6 +22,6 @@ jobs:
           echo test, and deploy your project.
           
       - name: Conditional test
-        if: ${{ github.events.input.name }} == 'fred'
+        if: "${{ github.events.input.name }} == 'fred'"
         run: |
           echo "Hello Frederic"
