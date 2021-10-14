@@ -1,0 +1,27 @@
+name: conditional testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Please enter a name.'
+        required: true
+        default: 'Martha'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          
+      - name: Conditional test
+        if: ${{ github.events.input.name }} == 'fred'
+        run: |
+          echo "Hello Frederic"
