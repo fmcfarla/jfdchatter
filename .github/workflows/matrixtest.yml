@@ -26,7 +26,7 @@ jobs:
     name: Build Tier 2
 
     if: ${{ github.event.inputs.tier }} == '2'
-      strategy:
+    strategy:
       fail-fast: false
       matrix:
       scheme: ['york-pa-yd', 'zanesville-oh']
