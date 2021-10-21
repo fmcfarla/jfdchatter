@@ -16,13 +16,16 @@ on:
 jobs:
 
   build:
-    name: Build
+    name: Build Tier 1
+    if: ${{ github.event.inputs.tier }} == '1'
     strategy:
       fail-fast: false
-    if: ${{ github.event.inputs.tier }} == '1'
     matrix: # NOTE: Matrices have a maximum of 256 items. If we go over 256 markets, split this workflow into two files.
       scheme: ['aberdeen-sd', 'abilene-tx']
-          
+
+    name: Build Tier 2
+    strategy:
+      fail-fast: false
     if: ${{ github.event.inputs.tier }} == '2'
     matrix:
       scheme: ['york-pa-yd', 'zanesville-oh']
