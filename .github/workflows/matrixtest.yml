@@ -1,0 +1,37 @@
+# test matrix based on inputs
+
+name: Matrix test
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
+      tier:
+        description: 'which tier to build'
+        required true
+        default: '1'
+
+jobs:
+
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      if: ${{ github.event.inputs.tier }} == '1'
+      matrix: # NOTE: Matrices have a maximum of 256 items. If we go over 256 markets, split this workflow into two files.
+        scheme: [
+          'aberdeen-sd', 'abilene-tx']
+          
+      if: ${{ github.event.inputs.tier }} == '2'
+      matrix:
+        scheme: [
+          'york-pa-yd', 'zanesville-oh'
+          ]
+
+    steps:
+
+      - name: Do something
+        run: |
+          echo "${{ matrix.scheme }} 
