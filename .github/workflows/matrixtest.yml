@@ -10,7 +10,7 @@ on:
         default: 'main'
       tier:
         description: 'which tier to build'
-        required true
+        required: true
         default: '1'
 
 jobs:
