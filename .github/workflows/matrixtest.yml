@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: # NOTE: Matrices have a maximum of 256 items. If we go over 256 markets, split this workflow into two files.
-      scheme: ['aberdeen-sd', 'abilene-tx']
+        scheme: ['aberdeen-sd', 'abilene-tx']
 
     name: Build Tier 2
 
@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-      scheme: ['york-pa-yd', 'zanesville-oh']
+        scheme: ['york-pa-yd', 'zanesville-oh']
 
     steps:
 
