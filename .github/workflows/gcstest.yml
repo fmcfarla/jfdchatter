@@ -1,0 +1,46 @@
+name: CDN Update
+
+on:
+  push:
+    branches: [ main ]
+    
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Update Config
+    runs-on: [self-hosted, tools-low-legacy]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:	
+          python-version: '2.7'
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_email: mobile@gannett-product-production.iam.gserviceaccount.com
+        env:
+          CLOUDSDK_PYTHON: /runner/_work/_tool/Python/2.7.18/x64/bin/python2
+          CLOUDSDK_CONFIG: /home/runner/
+          
+      - name: Create Temp Directory
+        run: mkdir temp
+        
+      - name: Create Service Account JSON file
+        run: echo '${{ secrets.GCP_SA_KEY }}' > serviceaccount-mobile-www-gannett-cdn-com.json
+              
+      - name: Activate Service Account
+        run: gcloud auth activate-service-account mobile@gannett-product-production.iam.gserviceaccount.com --key-file serviceaccount-mobile-www-gannett-cdn-com.json
+      
+      - name: Backup Current Config
+        working-directory: temp
+        run: gsutil -m cp -r gs://mobile-www-gannett-cdn-com/mobile/* .
+        
+ 
