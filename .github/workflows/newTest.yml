@@ -8,7 +8,7 @@ jobs:
   update:
     name: Test Update Config
     runs-on: [self-hosted, tools-low]
-    using: 'node12'
+    
 
     steps:
       - name: Checkout
@@ -19,7 +19,5 @@ jobs:
         with:	
           python-version: '2.7'
         
-      - id: files
-        name: Get Changed Files
-        uses: jitterbit/get-changed-files@v1
+
         
