@@ -8,8 +8,7 @@ jobs:
   update:
     name: Test Update Config
     runs-on: [self-hosted, tools-low]
-    runs:
-        using: 'node12'
+    using: 'node12'
 
     steps:
       - name: Checkout
