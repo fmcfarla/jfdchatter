@@ -19,5 +19,9 @@ jobs:
         with:	
           python-version: '2.7'
         
-
+      - id: files
+        name: Get Changed Files
+        uses: jitterbit/get-changed-files@v1
+        runs:
+            using: 'node12'
         
