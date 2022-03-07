@@ -1,0 +1,26 @@
+name: CDN Update Testing
+
+on:
+    
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Test Update Config
+    runs-on: [self-hosted, tools-low]
+    runs:
+        using: 'node12'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:	
+          python-version: '2.7'
+        
+      - id: files
+        name: Get Changed Files
+        uses: jitterbit/get-changed-files@v1
+        
