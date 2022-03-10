@@ -1,0 +1,62 @@
+name: Local Markets TESTING
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to Checkout'
+        required: true
+        default: 'main'
+      crosswords_branch:
+        description: 'Crosswords Branch to Checkout'
+        required: true
+        default: 'main'
+        
+jobs:
+  bundle:
+    name: Build Local Bundles
+    runs-on: [self-hosted, tools-low]
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+    steps:
+      - name: Checkout jfdchatter
+#         uses: actions/checkout@v2
+        with:
+#           ref: ${{github.event.inputs.branch}}
+          path: native-apps-android
+#           token: ${{ secrets.pat }}
+        run: |
+          pwd
+          echo "hello" > file.txt
+          ls -a
+
+      - name: Android Secret Files
+        working-directory: native-apps-android
+        run: |
+          ./.github/scripts/make_a_file.sh
+          pwd
+          ls -a
+        env:
+          SYSTEM_HOME: /root
+        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '2.7'
+        
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'  
+    
+#       - name: Build sportsplus rochester_ny Bundle
+#         working-directory: native-apps-android
+#         env:
+#           CI: true
+#           SYSTEM_HOME: /root
+#         run: |
+#           sudo bash ./gradlew :gannettNews:bundleSportsplusRelease :gannettNews:bundleRochester_nyRelease -PmarketsToBuild=sportsplusrochester_ny --build-cache --no-daemon --parallel 
+
+        
