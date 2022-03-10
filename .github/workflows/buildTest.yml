@@ -14,7 +14,7 @@ on:
 jobs:
   bundle:
     name: Build Local Bundles
-    runs-on: [self-hosted, tools-low]
+    runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
