@@ -32,6 +32,6 @@ jobs:
         env:
           SYSTEM_HOME: /root
         run: |
-          ./.github/scripts/make_a_file.sh
+#          ./.github/scripts/make_a_file.sh
           pwd
           ls -a
