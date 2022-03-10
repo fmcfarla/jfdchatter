@@ -28,7 +28,7 @@ jobs:
           ls -a
 
       - name: Android Secret Files
-        working-directory: native-apps-android
+        working-directory: jfdchatter
         env:
           SYSTEM_HOME: /root
         run: |
