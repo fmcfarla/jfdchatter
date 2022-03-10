@@ -20,8 +20,8 @@ jobs:
 
     steps:
       - name: Checkout jfdchatter
-        with:
-          path: native-apps-android
+#         with:
+#           path: native-apps-android
         run: |
           pwd
           echo "hello" > file.txt
