@@ -1,4 +1,4 @@
-name: Local Markets TESTING
+name: Local Markets Path Check
 on:
   workflow_dispatch:
     inputs:
@@ -10,31 +10,253 @@ on:
         description: 'Crosswords Branch to Checkout'
         required: true
         default: 'main'
-        
 jobs:
   bundle:
     name: Build Local Bundles
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, tools-low]
+    strategy:
+      fail-fast: false
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
 
     steps:
-      - name: Checkout jfdchatter
-#         with:
-#           path: native-apps-android
+      - name: Checkout native-apps-android
+        uses: actions/checkout@v2
+        with:
+          ref: ${{github.event.inputs.branch}}
+          path: native-apps-android
+          token: ${{ secrets.pat }}
         run: |
           pwd
-          echo "hello" > file.txt
           ls -a
 
-      - name: Android Secret Files
-#         working-directory: /jfdchatter
-#         env:
-#           SYSTEM_HOME: /home/runner/work/jfdchatter/jfdchatter
+      - name: Checkout native-apps-flutter
+        uses: actions/checkout@v2
+        with:
+          repository: 'GannettDigital/native-apps-flutter'
+          ref: ${{github.event.inputs.crosswords_branch}}
+          path: native-apps-flutter
+          token: ${{ secrets.pat }}
+          submodules: recursive
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           pwd
           ls -a
-          cd ..
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'gradle'
+        run: |
+          pwd
+          ls -a
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v2.0.1
+        run: |
+          pwd
+          ls -a
+
+      - name: Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.2.1'
+          channel: 'stable'
+        run: |
+          pwd
+          ls -a
+
+      - name: Install NDK
+        run: |
+          echo "y" | sudo /home/runner/.android/sdk/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
           pwd
           ls -a
           
+      - name: Flutter Secret Files
+        run: |
+          native-apps-flutter/.github/scripts/decrypt_files.sh
+          pwd
+          ls -a
+        env:
+          CROSSWORDS_FLUTTER_SECRETS: ${{ secrets.CROSSWORDS_FLUTTER_SECRETS }}
+          CROSSWORDS_KEYSTORE: ${{ secrets.CROSSWORDS_KEYSTORE }}
+
+      - name: Android Secret Files
+        working-directory: native-apps-android
+        run: |
+          ./.github/scripts/decrypt_files.sh
+          pwd
+          ls -a
+        env:
+          SYSTEM_HOME: /root
+          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
+          FREE_PRESS_KEYSTORE: ${{ secrets.FREE_PRESS_KEYSTORE }}
+          DETROIT_NEWS_KEYSTORE: ${{ secrets.DETROIT_NEWS_KEYSTORE }}
+          CINCY_KEYSTORE: ${{ secrets.CINCY_KEYSTORE }}
+          GANNETT_CERT_KEYSTORE: ${{ secrets.GANNETT_CERT_KEYSTORE }}
+          MERCURY_INTERMEDIA_KEYSTORE: ${{ secrets.MERCURY_INTERMEDIA_KEYSTORE }}
+          MJS_KEYSTORE: ${{ secrets.MJS_KEYSTORE }}
+          NJLN_KEYSTORE: ${{ secrets.NJLN_KEYSTORE }}
+          NKY_KEYSTORE: ${{ secrets.NKY_KEYSTORE }}
+          SCHURZ_KEYSTORE: ${{ secrets.SCHURZ_KEYSTORE }}
+          SCRIPPS_KEYSTORE: ${{ secrets.SCRIPPS_KEYSTORE }}
+          SIM_TEST_KEYSTORE: ${{ secrets.SIM_TEST_KEYSTORE }}
+          SPREED_KEYSTORE: ${{ secrets.SPREED_KEYSTORE }}
+          WHIZ_KEYSTORE: ${{ secrets.WHIZ_KEYSTORE }}
+          USAT_UPLOAD_KEYSTORE: ${{ secrets.USAT_UPLOAD_KEYSTORE }}
+          USCP_JKS: ${{ secrets.USCP_JKS }}
+          CINCY_UPLOAD_KEYSTORE: ${{ secrets.CINCY_UPLOAD_KEYSTORE }}
+          NKY_UPLOAD_KEYSTORE: ${{ secrets.NKY_UPLOAD_KEYSTORE }}
+          SCHURZ_UPLOAD_KEYSTORE: ${{ secrets.SCHURZ_UPLOAD_KEYSTORE }}
+          DETROIT_UPLOAD_KEYSTORE: ${{ secrets.DETROIT_UPLOAD_KEYSTORE }}
+          FREEP_UPLOAD_KEYSTORE: ${{ secrets.FREEP_UPLOAD_KEYSTORE }}
+          TNP_UPLOAD_KEYSTORE: ${{ secrets.TNP_UPLOAD_KEYSTORE }}
+          JMG_UPLOAD_KEYSTORE: ${{ secrets.JMG_UPLOAD_KEYSTORE }}
+          GATEHOUSE_UPLOAD_KEYSTORE: ${{ secrets.GATEHOUSE_UPLOAD_KEYSTORE }}
+          MEMPHIS_UPLOAD_KEYSTORE: ${{ secrets.MEMPHIS_UPLOAD_KEYSTORE }}
+          MILWAUKEE_UPLOAD_KEYSTORE: ${{ secrets.MILWAUKEE_UPLOAD_KEYSTORE }}
+          BERGEN_UPLOAD_KEYSTORE: ${{ secrets.BERGEN_UPLOAD_KEYSTORE }}
+          GANNETT_NEWS_GOOGLE_JSON: ${{ secrets.GANNETT_NEWS_GOOGLE_JSON }}
+          FLASH_GOOGLE_JSON: ${{ secrets.FLASH_GOOGLE_JSON }}
+          SECRET_GRADLE_PROPS: ${{ secrets.SECRET_GRADLE_PROPS }}
+          COMBINED_APP_SECRETS: ${{ secrets.COMBINED_APP_SECRETS }}
+          WATERTOWN_KEYSTORE: ${{ secrets.WATERTOWN_KEYSTORE }}
+          WATERTOWN_UPLOAD_KEYSTORE: ${{ secrets.WATERTOWN_UPLOAD_KEYSTORE }}
+
+      - name: Update Flutter Package Dependencies
+        working-directory: native-apps-flutter/games/games_module
+        run: |
+          sudo flutter pub get
+          pwd
+          ls -a
+
+      - name: Add Local Properties File
+        working-directory: native-apps-android
+        run: |
+          touch local.properties; echo "sdk.dir=/home/runner/.android/sdk" > local.properties
+          pwd
+          ls -a
+        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '2.7'
+        run: |
+          pwd
+          ls -a
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          version: '290.0.1'
+          project_id: 'native-apps-ci'
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+        env:
+          CLOUDSDK_PYTHON: /opt/hostedtoolcache/Python/2.7.18/x64/bin/python2
+          CLOUDSDK_CONFIG: /home/runner/
+        run: |
+          pwd
+          ls -a
+          
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        run: |
+          pwd
+          ls -a
+
+      - name: Add Local Properties File
+        working-directory: native-apps-android
+        run: |
+          touch local.properties; echo "sdk.dir=/home/runner/.android/sdk" > local.properties
+          pwd
+          ls -a
+        
+
+      - name: NavLogoModule Setup Release
+        working-directory: native-apps-flutter/napps_nav_logo_module
+        run: |
+          sudo flutter build aar --no-debug --no-profile
+          pwd
+          ls -a
+        
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+        run: |
+          pwd
+          ls -a
+
+      - name: Inject Secrets
+        working-directory: native-apps-android
+        env:
+          CI: true
+          BUILD_ALL_FLAVORS: true
+          SYSTEM_HOME: /root
+        run: |
+          sudo bash ./gradlew clean :gannettNews:injectSecrets --parallel --no-daemon -x lintVitalUsatRelease
+          pwd
+          ls -a
+    
+      - name: Build sportsplus rochester_ny Bundle
+        working-directory: native-apps-android
+        env:
+          CI: true
+          SYSTEM_HOME: /root
+        run: |
+          sudo bash ./gradlew :gannettNews:bundleSportsplusRelease :gannettNews:bundleRochester_nyRelease -PmarketsToBuild=sportsplusrochester_ny --build-cache --no-daemon --parallel 
+          pwd
+          ls -a
+        
+      - name: Post Sportsplus Bundle to GCS
+        env:
+          CLOUDSDK_PYTHON: /opt/hostedtoolcache/Python/2.7.18/x64/bin/python2
+          CLOUDSDK_CONFIG: /home/runner/
+        run: |
+          sudo chmod 755 native-apps-android/gannett-news/gannettNews/build/outputs/bundle/sportsplusRelease/gannettNews-sportsplus-release.aab; gsutil cp native-apps-android/gannett-news/gannettNews/build/outputs/bundle/sportsplusRelease/gannettNews-sportsplus-release.aab gs://native-apps-artifacts/Android/${{github.event.inputs.branch}}/gannettNews-sportsplus-release-${{ github.run_number }}.aab 
+          pwd
+          ls -a
+        
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: android-ci
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://www.gannett.com/wp-content/uploads/2019/11/Gannett_DayOne_Facebook-Shared-Image_1200x630.jpg
+          SLACK_MESSAGE: https://console.cloud.google.com/storage/browser/native-apps-artifacts/Android/${{github.event.inputs.branch}}
+          SLACK_TITLE: Sportsplus Bundle Posted
+          SLACK_USERNAME: native-apps-android
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}   
+        run: |
+          pwd
+          ls -a
+        
+      - name: Post Rochester_ny Bundle to GCS
+        env:
+          CLOUDSDK_PYTHON: /opt/hostedtoolcache/Python/2.7.18/x64/bin/python2
+          CLOUDSDK_CONFIG: /home/runner/
+        run: |
+          sudo chmod 755 native-apps-android/gannett-news/gannettNews/build/outputs/bundle/rochester_nyRelease/gannettNews-rochester_ny-release.aab; gsutil cp native-apps-android/gannett-news/gannettNews/build/outputs/bundle/rochester_nyRelease/gannettNews-rochester_ny-release.aab gs://native-apps-artifacts/Android/${{github.event.inputs.branch}}/gannettNews-rochester_ny-release-${{ github.run_number }}.aab 
+          pwd
+          ls -a
+          
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: android-ci
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://www.gannett.com/wp-content/uploads/2019/11/Gannett_DayOne_Facebook-Shared-Image_1200x630.jpg
+          SLACK_MESSAGE: https://console.cloud.google.com/storage/browser/native-apps-artifacts/Android/${{github.event.inputs.branch}}
+          SLACK_TITLE: Rochester_ny Bundle Posted
+          SLACK_USERNAME: native-apps-android
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          pwd
+          ls -a
+        
