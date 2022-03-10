@@ -28,9 +28,9 @@ jobs:
           ls -a
 
       - name: Android Secret Files
-        working-directory: /jfdchatter
-        env:
-          SYSTEM_HOME: /home/runner/work/jfdchatter/jfdchatter
+#         working-directory: /jfdchatter
+#         env:
+#           SYSTEM_HOME: /home/runner/work/jfdchatter/jfdchatter
         run: |
           pwd
           ls -a
