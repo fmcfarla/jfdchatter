@@ -34,3 +34,7 @@ jobs:
         run: |
           pwd
           ls -a
+          cd ..
+          pwd
+          ls -a
+          
