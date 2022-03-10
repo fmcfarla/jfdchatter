@@ -30,7 +30,7 @@ jobs:
       - name: Android Secret Files
         working-directory: /jfdchatter
         env:
-          SYSTEM_HOME: /root
+          SYSTEM_HOME: /home/runner/work/jfdchatter/jfdchatter
         run: |
           pwd
           ls -a
